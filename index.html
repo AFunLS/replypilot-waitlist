@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ReplyPilot — AI Review Replies for Google Business Profile</title>
+    <meta
+      name="description"
+      content="ReplyPilot helps local businesses reply to Google reviews fast, consistently, and in their brand voice—with safe guardrails. Join the waitlist for early access + founder pricing."
+    />
+    <meta property="og:title" content="ReplyPilot — AI review replies with guardrails" />
+    <meta
+      property="og:description"
+      content="Auto-handle the praise. Escalate the pain. Join the waitlist for early access + founder pricing."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0b1220" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="brand">
+          <div class="brand__mark" aria-hidden="true">RP</div>
+          <div class="brand__text">
+            <div class="brand__name">ReplyPilot</div>
+            <div class="brand__tag">AI review replies with guardrails</div>
+          </div>
+        </div>
+
+        <nav class="topbar__nav" aria-label="Primary">
+          <a href="#how" class="navlink">How it works</a>
+          <a href="#pricing" class="navlink">Pricing</a>
+          <a href="#faq" class="navlink">FAQ</a>
+          <a href="#waitlist" class="btn btn--primary">Join waitlist</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero__grid">
+          <div class="hero__copy">
+            <p class="eyebrow">Auto-handle the praise. Escalate the pain.</p>
+            <h1>Reply to Google reviews in minutes (without sounding robotic)</h1>
+
+            <ul class="bullets">
+              <li><strong>Auto-reply to 4–5★</strong> reviews using safe rules and on-brand language</li>
+              <li><strong>Escalate ≤3★</strong> reviews instantly with a ready-to-send response + checklist</li>
+              <li><strong>Draft-first mode</strong> if you want human approval before anything goes live</li>
+            </ul>
+
+            <div class="cta-row">
+              <a class="btn btn--primary" href="#waitlist">Join the waitlist</a>
+              <a class="btn btn--ghost" href="#demo">Book a 10-minute demo</a>
+            </div>
+
+            <p class="subtext">Founder-friendly early access. No spam. Unsubscribe anytime.</p>
+          </div>
+
+          <aside class="hero__card" aria-label="Waitlist card">
+            <div class="card">
+              <div class="card__header">
+                <h2 class="card__title">Join the waitlist</h2>
+                <p class="card__subtitle">Get early access + founder pricing for 12 months.</p>
+              </div>
+
+              <form id="waitlist" class="form" autocomplete="on">
+                <label class="field">
+                  <span>Name</span>
+                  <input name="name" type="text" placeholder="Jane" />
+                </label>
+
+                <label class="field">
+                  <span>Email <em>(required)</em></span>
+                  <input name="email" type="email" required placeholder="jane@company.com" />
+                </label>
+
+                <label class="field">
+                  <span>Business website</span>
+                  <input name="website" type="url" placeholder="https://example.com" />
+                </label>
+
+                <div class="fieldrow">
+                  <label class="field">
+                    <span># locations</span>
+                    <input name="locations" inputmode="numeric" pattern="[0-9]*" placeholder="1" />
+                  </label>
+
+                  <label class="field">
+                    <span>Reviews / month</span>
+                    <input name="reviews_per_month" inputmode="numeric" pattern="[0-9]*" placeholder="20" />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>Preference</span>
+                  <select name="mode">
+                    <option value="draft_only">Draft-only (human approval)</option>
+                    <option value="auto_reply_positive">Auto-reply 4–5★, escalate ≤3★</option>
+                    <option value="unsure">Not sure yet</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span>Google Business Profile link(s) (optional)</span>
+                  <textarea
+                    name="gbp_links"
+                    rows="3"
+                    placeholder="Paste one or multiple links"
+                  ></textarea>
+                </label>
+
+                <input type="hidden" name="source" value="replypilot-waitlist" />
+                <input type="hidden" name="page" value="/" />
+
+                <button class="btn btn--primary btn--full" type="submit">
+                  Join waitlist
+                </button>
+
+                <p class="fineprint">
+                  By submitting, you agree we can email you about early access. We won’t sell your data.
+                </p>
+
+                <div class="form__status" role="status" aria-live="polite"></div>
+              </form>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="problem">
+        <div class="container">
+          <h2>The problem (what you’re already feeling)</h2>
+          <div class="grid-2">
+            <div class="panel">
+              <ul class="bullets">
+                <li>Replies matter, but it’s a time sink.</li>
+                <li>When you do reply, it’s canned or inconsistent.</li>
+                <li>Negative reviews need a human ASAP — but you notice them late.</li>
+                <li>You don’t want an AI to post something risky on your behalf.</li>
+              </ul>
+            </div>
+            <div class="panel panel--quote">
+              <p class="quote">
+                <strong>Most reviews are safe to handle automatically.</strong><br />
+                The risky ones must escalate.
+              </p>
+              <p class="quote__sub">ReplyPilot is built around this guardrail.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="how">
+        <div class="container">
+          <h2>How ReplyPilot works (v1)</h2>
+          <ol class="steps">
+            <li>
+              <h3>Connect your Google Business Profile</h3>
+              <p>Connect once. ReplyPilot watches for new reviews.</p>
+            </li>
+            <li>
+              <h3>Apply “Star Rules” (guardrails you can trust)</h3>
+              <p>
+                4–5★: auto-reply (or auto-draft). 3★ and below: draft-only + escalation.
+              </p>
+            </li>
+            <li>
+              <h3>Brand voice, not generic AI</h3>
+              <p>
+                Use your website + existing replies + do/don’t rules (forbidden phrases, promo policy).
+              </p>
+            </li>
+            <li>
+              <h3>Crisis mode for bad reviews</h3>
+              <p>
+                Alerts + 3 suggested replies + a short internal checklist (refund? replacement? outreach?).
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" id="for">
+        <div class="container">
+          <h2>Who it’s for</h2>
+          <div class="grid-2">
+            <div class="panel">
+              <h3>Great fit</h3>
+              <ul class="bullets">
+                <li>Local businesses (dentists, medspas, gyms, home services, restaurants)</li>
+                <li>Shopify brands with a physical presence</li>
+                <li>Multi-location operators who want HQ voice + local execution</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>Not ideal</h3>
+              <ul class="bullets">
+                <li>Need an enterprise suite across 8 review sites</li>
+                <li>Heavy procurement/security paperwork before a trial</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="pricing">
+        <div class="container">
+          <h2>Pricing (founder-friendly, transparent)</h2>
+          <p class="section__lead">Pricing is per location (Google Business Profile is per location).</p>
+
+          <div class="pricing">
+            <article class="pricecard">
+              <div class="pricecard__top">
+                <h3>Starter</h3>
+                <p class="price">$19<span>/mo</span> <small>per location</small></p>
+                <p class="muted">Draft replies only (no auto-post).</p>
+              </div>
+              <ul class="checklist">
+                <li>Draft replies</li>
+                <li>1 user</li>
+                <li>Up to 50 generations / month</li>
+                <li>Basic brand voice settings</li>
+              </ul>
+            </article>
+
+            <article class="pricecard pricecard--featured" aria-label="Pro plan">
+              <div class="pricecard__badge">Most wanted</div>
+              <div class="pricecard__top">
+                <h3>Pro</h3>
+                <p class="price">$49<span>/mo</span> <small>per location</small></p>
+                <p class="muted">Safe automation you can trust.</p>
+              </div>
+              <ul class="checklist">
+                <li><strong>Auto-reply rules for 4–5★</strong></li>
+                <li>≤3★ escalation alerts</li>
+                <li>Up to 300 generations / month</li>
+                <li>3 users</li>
+                <li>Forbidden phrases + promo rules</li>
+              </ul>
+            </article>
+
+            <article class="pricecard">
+              <div class="pricecard__top">
+                <h3>Agency</h3>
+                <p class="price">$199<span>/mo</span> <small>up to 10 locations</small></p>
+                <p class="muted">For agencies managing multiple clients.</p>
+              </div>
+              <ul class="checklist">
+                <li>10 locations included</li>
+                <li>Client workspaces (separate brand voices)</li>
+                <li>White-label weekly report export</li>
+                <li>Priority onboarding</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="callout">
+            <p>
+              <strong>Early access deal:</strong> waitlist members get founder pricing for the first 12 months.
+            </p>
+            <a class="btn btn--primary" href="#waitlist">Join the waitlist</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="demo">
+        <div class="container">
+          <h2>Book a 10-minute demo</h2>
+          <p class="section__lead">
+            If you want to move fast, join the waitlist and add a note. We’ll reach out to schedule.
+          </p>
+          <div class="panel">
+            <p>
+              Demo request shortcut: email
+              <a href="mailto:merceraline261@gmail.com?subject=ReplyPilot%20demo%20request">merceraline261@gmail.com</a>
+              with:
+            </p>
+            <ul class="bullets">
+              <li>Business name + website</li>
+              <li># locations</li>
+              <li>Approx. reviews / month</li>
+              <li>Draft-only vs auto-reply preference</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="container">
+          <h2>FAQ</h2>
+          <div class="faq">
+            <details>
+              <summary>Does ReplyPilot auto-post replies?</summary>
+              <p>
+                Only if you turn it on — and only for reviews that match your safe rules (typically 4–5★).
+                Negative reviews default to draft-only + escalation.
+              </p>
+            </details>
+            <details>
+              <summary>What if the AI writes something off-brand or risky?</summary>
+              <p>
+                You control tone, max length, forbidden phrases, and promo/discount policy. You can keep
+                everything in draft-only mode.
+              </p>
+            </details>
+            <details>
+              <summary>Is this for Google only?</summary>
+              <p>
+                V1 focuses on Google Business Profile because it’s where most SMB review volume lives.
+                Other platforms may come later.
+              </p>
+            </details>
+            <details>
+              <summary>Can I use this for multiple locations?</summary>
+              <p>Yes. Pricing is per location and the inbox supports multi-location views.</p>
+            </details>
+            <details>
+              <summary>How long does setup take?</summary>
+              <p>Target: 10 minutes.</p>
+            </details>
+            <details>
+              <summary>Is there a free trial?</summary>
+              <p>
+                For early access, we’ll offer a short trial (or a “first month refundable”) depending on
+                onboarding load.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="container footer__inner">
+          <div>
+            <div class="brand brand--small">
+              <div class="brand__mark" aria-hidden="true">RP</div>
+              <div class="brand__text">
+                <div class="brand__name">ReplyPilot</div>
+                <div class="brand__tag">AI review replies with guardrails</div>
+              </div>
+            </div>
+            <p class="muted">© <span id="year"></span> ReplyPilot. All rights reserved.</p>
+          </div>
+
+          <div class="footer__links">
+            <a href="#waitlist">Waitlist</a>
+            <a href="mailto:merceraline261@gmail.com">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
