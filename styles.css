@@ -179,6 +179,24 @@ input:focus,textarea:focus,select:focus{border-color:rgba(124,92,255,.65);box-sh
   padding:16px;
 }
 
+.demo{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:start}
+.demo__bullets{margin-top:10px}
+.demo__pricing{margin-top:14px}
+.demo__shots{display:grid;gap:14px}
+.shot{
+  margin:0;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:var(--radius2);
+  padding:12px;
+}
+.shot img{
+  width:100%;height:auto;display:block;
+  border-radius:14px;
+  background:rgba(0,0,0,.12);
+}
+.shot figcaption{margin-top:8px;color:var(--muted);font-size:12px;font-weight:700}
+
 .faq{display:grid;gap:10px}
 .faq details{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
 .faq summary{cursor:pointer;font-weight:800}
@@ -192,6 +210,7 @@ input:focus,textarea:focus,select:focus{border-color:rgba(124,92,255,.65);box-sh
   .hero__grid{grid-template-columns:1fr;}
   .hero h1{font-size:36px}
   .pricing{grid-template-columns:1fr;}
+  .demo{grid-template-columns:1fr;}
 }
 @media (max-width: 680px){
   .topbar__nav{display:none}

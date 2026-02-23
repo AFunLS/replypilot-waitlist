@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#7c5cff"/>
+      <stop offset="1" stop-color="#27d4ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="760" fill="transparent"/>
+
+  <g filter="url(#shadow)">
+    <rect x="90" y="70" width="1020" height="620" rx="28" fill="rgba(15,25,48,0.95)" stroke="rgba(232,238,252,0.14)"/>
+    <rect x="90" y="70" width="1020" height="72" rx="28" fill="rgba(255,255,255,0.04)"/>
+    <text x="150" y="115" fill="rgba(232,238,252,0.92)" font-family="Inter,system-ui" font-size="18" font-weight="800">Draft reply</text>
+
+    <rect x="124" y="170" width="460" height="480" rx="18" fill="rgba(255,255,255,0.03)" stroke="rgba(232,238,252,0.10)"/>
+    <text x="150" y="210" fill="rgba(232,238,252,0.9)" font-family="Inter,system-ui" font-size="13" font-weight="800">Incoming review</text>
+    <text x="150" y="242" fill="rgba(232,238,252,0.95)" font-family="Inter,system-ui" font-size="18" font-weight="900">★★★☆☆</text>
+    <text x="150" y="276" fill="rgba(232,238,252,0.8)" font-family="Inter,system-ui" font-size="13" font-weight="600">“Good service but wait time was long.”</text>
+
+    <text x="150" y="330" fill="rgba(167,178,214,0.95)" font-family="Inter,system-ui" font-size="12" font-weight="700">Star Rule:</text>
+    <text x="220" y="330" fill="rgba(232,238,252,0.9)" font-family="Inter,system-ui" font-size="12" font-weight="800">3★ → draft-only + apology + next-step</text>
+
+    <text x="150" y="380" fill="rgba(167,178,214,0.95)" font-family="Inter,system-ui" font-size="12" font-weight="700">Voice:</text>
+    <text x="200" y="380" fill="rgba(232,238,252,0.9)" font-family="Inter,system-ui" font-size="12" font-weight="800">Warm • concise • no discounts</text>
+
+    <rect x="124" y="460" width="460" height="150" rx="14" fill="rgba(255,255,255,0.03)"/>
+    <text x="150" y="495" fill="rgba(232,238,252,0.92)" font-family="Inter,system-ui" font-size="12" font-weight="900">Suggested reply (editable)</text>
+    <text x="150" y="525" fill="rgba(232,238,252,0.82)" font-family="Inter,system-ui" font-size="13" font-weight="600">Thanks for your feedback — we’re glad you had a good visit.</text>
+    <text x="150" y="548" fill="rgba(232,238,252,0.82)" font-family="Inter,system-ui" font-size="13" font-weight="600">We’re sorry about the wait. Please call us and we’ll make it right.</text>
+
+    <rect x="620" y="170" width="456" height="480" rx="18" fill="rgba(124,92,255,0.08)" stroke="rgba(124,92,255,0.26)"/>
+    <text x="646" y="210" fill="rgba(232,238,252,0.92)" font-family="Inter,system-ui" font-size="13" font-weight="900">One-click variants</text>
+
+    <rect x="646" y="236" width="404" height="92" rx="14" fill="rgba(255,255,255,0.03)"/>
+    <rect x="646" y="340" width="404" height="92" rx="14" fill="rgba(255,255,255,0.03)"/>
+    <rect x="646" y="444" width="404" height="92" rx="14" fill="rgba(255,255,255,0.03)"/>
+
+    <text x="666" y="272" fill="rgba(232,238,252,0.82)" font-family="Inter,system-ui" font-size="13" font-weight="700">Variant A</text>
+    <text x="666" y="298" fill="rgba(167,178,214,0.95)" font-family="Inter,system-ui" font-size="12" font-weight="600">Apology-first, short, friendly</text>
+
+    <text x="666" y="376" fill="rgba(232,238,252,0.82)" font-family="Inter,system-ui" font-size="13" font-weight="700">Variant B</text>
+    <text x="666" y="402" fill="rgba(167,178,214,0.95)" font-family="Inter,system-ui" font-size="12" font-weight="600">Offer to continue offline, reassure</text>
+
+    <text x="666" y="480" fill="rgba(232,238,252,0.82)" font-family="Inter,system-ui" font-size="13" font-weight="700">Variant C</text>
+    <text x="666" y="506" fill="rgba(167,178,214,0.95)" font-family="Inter,system-ui" font-size="12" font-weight="600">More formal tone for medical/dental</text>
+
+    <rect x="878" y="584" width="172" height="46" rx="999" fill="url(#g)"/>
+    <text x="914" y="613" fill="#081023" font-family="Inter,system-ui" font-size="13" font-weight="900">Approve & send</text>
+  </g>
+</svg>
