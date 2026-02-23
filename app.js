@@ -184,6 +184,46 @@ function init() {
 
   const status = form.querySelector('.form__status');
 
+  function buildGitHubIssueUrl(data) {
+    // We use GitHub Issues as a “backend” that requires no new SaaS accounts for us.
+    // Note: the submitter may need a GitHub account; if that fails they’ll fall back to mailto.
+    const repo = 'AFunLS/replypilot-waitlist';
+    const title = `Waitlist: ${data.email || 'unknown'} (${new Date().toISOString()})`;
+
+    const bodyLines = [
+      '# ReplyPilot waitlist signup',
+      '',
+      `Name: ${data.name || ''}`,
+      `Email: ${data.email || ''}`,
+      `Website: ${data.website || ''}`,
+      `# locations: ${data.locations || ''}`,
+      `Reviews/month: ${data.reviews_per_month || ''}`,
+      `Preference: ${data.mode || ''}`,
+      `GBP links: ${data.gbp_links || ''}`,
+      '',
+      '## Attribution',
+      `utm_source: ${data.utm_source || ''}`,
+      `utm_medium: ${data.utm_medium || ''}`,
+      `utm_campaign: ${data.utm_campaign || ''}`,
+      `utm_content: ${data.utm_content || ''}`,
+      `utm_term: ${data.utm_term || ''}`,
+      `ref: ${data.ref || ''}`,
+      `landing: ${data.landing || ''}`,
+      '',
+      `Client time: ${data.client_ts || ''}`,
+      '',
+      '---',
+      'Created from the static waitlist form (GitHub Issues capture).'
+    ];
+
+    const params = new URLSearchParams();
+    params.set('title', title);
+    params.set('body', bodyLines.join('\n'));
+    params.set('labels', 'waitlist');
+
+    return `https://github.com/${repo}/issues/new?${params.toString()}`;
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     setStatus(status, 'Submitting…');
@@ -194,16 +234,28 @@ function init() {
       return;
     }
 
+    // Primary path: GitHub Issues (no-login for us; stores data + UTMs).
+    // This is a deterministic “backend” that works on GitHub Pages.
     try {
-      await postJSON('/api/waitlist', data);
-      void countapiHit('afunls-replypilot-waitlist/waitlist_submit');
-      setStatus(status, '✅ You’re on the list. We’ll be in touch soon.', 'success');
-      form.reset();
+      const issueUrl = buildGitHubIssueUrl(data);
+      void countapiHit('afunls-replypilot-waitlist/waitlist_submit_github_issue');
+      setStatus(
+        status,
+        'Almost done — a GitHub page will open. Click “Submit new issue” to confirm your spot. If you don\'t have GitHub, we\'ll open an email fallback.',
+        'success'
+      );
+
+      const w = window.open(issueUrl, '_blank', 'noopener,noreferrer');
+      if (!w) {
+        // Popup blocked.
+        window.location.href = issueUrl;
+      }
+
+      // Don’t reset immediately; user may want to retry mailto.
     } catch (err) {
-      // If no server handler exists (common on static-only hosting), fallback to email.
       const msg = String(err?.message || 'Submit failed');
       void countapiHit('afunls-replypilot-waitlist/waitlist_submit_fallback_mailto');
-      setStatus(status, `Couldn’t submit automatically (${msg}). Opening email fallback…`);
+      setStatus(status, `Couldn’t open GitHub (${msg}). Opening email fallback…`, 'error');
       window.location.href = fallbackMailto(data);
     }
   });
