@@ -167,7 +167,41 @@ function fallbackMailto(data) {
   return `mailto:${to}?subject=${subject}&body=${body}`;
 }
 
+function applyHeroVariant() {
+  const p = new URLSearchParams(window.location.search || '');
+  const ab = (p.get('ab') || '').toLowerCase();
+  if (ab !== 'b') return; // Variant A is default
+
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  // Variant B (more pain-focused)
+  setText('hero_eyebrow', 'Stop losing leads to unanswered reviews.');
+  setText('hero_h1', 'Never leave a Google review unanswered again');
+
+  // Bullets
+  const b1 = document.getElementById('hero_b1');
+  const b2 = document.getElementById('hero_b2');
+  const b3 = document.getElementById('hero_b3');
+  if (b1) b1.innerHTML = '<strong>Daily inbox, cleared:</strong> generate replies in bulk for every new review';
+  if (b2) b2.innerHTML = '<strong>Bad reviews handled right:</strong> empathy-first drafts + escalation workflow';
+  if (b3) b3.innerHTML = '<strong>Team-safe:</strong> draft-only by default; auto-post is opt-in';
+
+  // CTAs
+  const cta1 = document.getElementById('hero_cta_primary');
+  const cta2 = document.getElementById('hero_cta_secondary');
+  if (cta1) cta1.textContent = 'Join waitlist (founder pricing)';
+  if (cta2) {
+    cta2.textContent = 'Book a 10-min walkthrough';
+    cta2.setAttribute('href', '#demo');
+  }
+}
+
 function init() {
+  applyHeroVariant();
+
   const year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
 
