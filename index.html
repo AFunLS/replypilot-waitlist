@@ -29,8 +29,10 @@
     <script>
       (function(){
         // Prefer setting GA measurement ID via window.__RP_CONFIG__ or environment during deploy.
-        var GA_MEASUREMENT_ID = (window.__RP_CONFIG__ && window.__RP_CONFIG__.ga) || 'GA_MEASUREMENT_ID_PLACEHOLDER';
-        if (GA_MEASUREMENT_ID && GA_MEASUREMENT_ID.indexOf('GA_')===0) {
+        // Also supports a <meta name="ga-measurement-id" content="G-XXXX"> override in the page head.
+        var meta = document.querySelector('meta[name="ga-measurement-id"]');
+        var GA_MEASUREMENT_ID = (window.__RP_CONFIG__ && window.__RP_CONFIG__.ga) || (meta && meta.content) || 'GA_MEASUREMENT_ID_PLACEHOLDER';
+        if (GA_MEASUREMENT_ID && GA_MEASUREMENT_ID.indexOf('G-')===0) {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);} 
           gtag('js', new Date());

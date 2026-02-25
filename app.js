@@ -1,25 +1,23 @@
 /*
-  ReplyPilot waitlist static handler
+  ReplyPilot waitlist handler — Formspree edition
+  Form endpoint: https://formspree.io/f/maqdalbr
+  Submissions delivered to merceraline261@gmail.com via Formspree.
 
-  - Tries to POST to /api/waitlist (you provide a handler)
-  - If no handler exists, it falls back to a mailto: link as a “works anywhere” stub.
-
-  NOTE: This is intentionally simple; production storage should be:
-  - Netlify Forms, Formspree, Airtable, Google Sheets, ConvertKit, Beehiiv, etc.
+  Changelog:
+    2026-02-24  replaced GitHub-Issues capture → Formspree JSON POST (task-ee475e790233)
 */
 
+/* ─── helpers ─────────────────────────────────────────────────────────────── */
+
 function setStatus(el, msg, kind) {
+  if (!el) return;
   el.textContent = msg;
   el.classList.remove('success', 'error');
   if (kind) el.classList.add(kind);
 }
 
 function safeJsonParse(s) {
-  try {
-    return JSON.parse(s);
-  } catch {
-    return null;
-  }
+  try { return JSON.parse(s); } catch { return null; }
 }
 
 function pick(obj, keys) {
@@ -30,34 +28,33 @@ function pick(obj, keys) {
   return out;
 }
 
+/* ─── UTM / attribution ────────────────────────────────────────────────────── */
+
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'ref'];
 const UTM_STORAGE_KEY = 'replypilot:last_attribution_v1';
 
 function getAttributionFromUrl() {
   const p = new URLSearchParams(window.location.search || '');
-  const urlAttrs = {};
+  const attrs = {};
   for (const k of UTM_KEYS) {
     const v = p.get(k);
-    if (v && v.trim() !== '') urlAttrs[k] = v.trim();
+    if (v && v.trim() !== '') attrs[k] = v.trim();
   }
-  return urlAttrs;
+  return attrs;
 }
 
 function getStoredAttribution() {
-  const raw = window.localStorage.getItem(UTM_STORAGE_KEY);
+  const raw = window.localStorage && window.localStorage.getItem(UTM_STORAGE_KEY);
   const parsed = safeJsonParse(raw);
   if (!parsed || typeof parsed !== 'object') return {};
-  // don't keep stale forever; 30 days is enough for this microtest
-  const ts = Number(parsed.ts || 0);
-  const ageMs = Date.now() - ts;
-  if (!Number.isFinite(ts) || ageMs > 30 * 24 * 60 * 60 * 1000) return {};
+  const ageMs = Date.now() - Number(parsed.ts || 0);
+  if (ageMs > 30 * 24 * 60 * 60 * 1000) return {};
   return pick(parsed, UTM_KEYS);
 }
 
 function setStoredAttribution(attrs) {
-  if (!attrs || Object.keys(attrs).length === 0) return;
-  const payload = { ...attrs, ts: Date.now() };
-  window.localStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(payload));
+  if (!window.localStorage || !attrs || Object.keys(attrs).length === 0) return;
+  window.localStorage.setItem(UTM_STORAGE_KEY, JSON.stringify({ ...attrs, ts: Date.now() }));
 }
 
 function getAttribution() {
@@ -71,28 +68,25 @@ function getAttribution() {
 
 function applyAttributionToForm(form, attrs) {
   if (!form) return;
-  const landing = window.location.href;
-  const merged = { ...attrs, landing };
-
+  const merged = { ...attrs, landing: window.location.href };
   for (const [k, v] of Object.entries(merged)) {
     const el = form.querySelector(`[name="${k}"]`);
     if (el) el.value = v;
   }
 }
 
+/* ─── countapi pageview (best-effort, no-login) ────────────────────────────── */
+
 async function countapiHit(key) {
-  // CountAPI is a simple no-login counter. Good enough for a lightweight baseline.
-  // https://countapi.xyz
-  // We deliberately do not block the UX on this.
-  const url = `https://api.countapi.xyz/hit/${encodeURIComponent(key)}`;
   try {
-    const res = await fetch(url, { method: 'GET', mode: 'cors' });
+    const res = await fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(key)}`,
+      { method: 'GET', mode: 'cors' });
     if (!res.ok) return null;
     return await res.json();
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
+
+/* ─── build FormData object with attribution injected ─────────────────────── */
 
 function toObject(form) {
   const fd = new FormData(form);
@@ -101,34 +95,33 @@ function toObject(form) {
     const value = typeof v === 'string' ? v.trim() : v;
     if (value !== '') obj[k] = value;
   }
-
-  // Always attach attribution if we have it.
+  // always attach attribution
   const attrs = getAttribution();
   for (const [k, v] of Object.entries(attrs)) {
     if (v && String(v).trim() !== '') obj[k] = String(v).trim();
   }
   obj.landing = window.location.href;
-
   obj.client_ts = new Date().toISOString();
   return obj;
 }
 
-async function postJSON(url, data) {
-  const res = await fetch(url, {
+/* ─── Formspree JSON POST ──────────────────────────────────────────────────── */
+
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maqdalbr';
+
+async function postFormspree(data) {
+  const res = await fetch(FORMSPREE_ENDPOINT, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
     body: JSON.stringify(data)
   });
-
   let payload = null;
-  try {
-    payload = await res.json();
-  } catch {
-    // ignore
-  }
-
+  try { payload = await res.json(); } catch { /* ignore */ }
   if (!res.ok) {
-    const msg = payload?.error || `Request failed (${res.status})`;
+    const msg = (payload && (payload.error || payload.message)) || `Request failed (${res.status})`;
     const err = new Error(msg);
     err.status = res.status;
     err.payload = payload;
@@ -137,35 +130,7 @@ async function postJSON(url, data) {
   return payload;
 }
 
-function fallbackMailto(data) {
-  const subject = encodeURIComponent('ReplyPilot waitlist signup');
-  const bodyLines = [
-    'New waitlist signup:',
-    `Name: ${data.name || ''}`,
-    `Email: ${data.email || ''}`,
-    `Website: ${data.website || ''}`,
-    `Locations: ${data.locations || ''}`,
-    `Reviews/month: ${data.reviews_per_month || ''}`,
-    `Preference: ${data.mode || ''}`,
-    `GBP links: ${data.gbp_links || ''}`,
-    '',
-    'Attribution:',
-    `utm_source: ${data.utm_source || ''}`,
-    `utm_medium: ${data.utm_medium || ''}`,
-    `utm_campaign: ${data.utm_campaign || ''}`,
-    `utm_content: ${data.utm_content || ''}`,
-    `utm_term: ${data.utm_term || ''}`,
-    `ref: ${data.ref || ''}`,
-    `landing: ${data.landing || ''}`,
-    '',
-    `Client time: ${data.client_ts || ''}`
-  ];
-  const body = encodeURIComponent(bodyLines.join('\n'));
-
-  // NOTE: replace destination if desired
-  const to = 'merceraline261@gmail.com';
-  return `mailto:${to}?subject=${subject}&body=${body}`;
-}
+/* ─── A/B hero variant ─────────────────────────────────────────────────────── */
 
 function applyHeroVariant() {
   const p = new URLSearchParams(window.location.search || '');
@@ -177,11 +142,10 @@ function applyHeroVariant() {
     if (el) el.textContent = text;
   };
 
-  // Variant B (more pain-focused)
+  // Variant B (pain-focused)
   setText('hero_eyebrow', 'Stop losing leads to unanswered reviews.');
   setText('hero_h1', 'Never leave a Google review unanswered again');
 
-  // Bullets
   const b1 = document.getElementById('hero_b1');
   const b2 = document.getElementById('hero_b2');
   const b3 = document.getElementById('hero_b3');
@@ -189,7 +153,6 @@ function applyHeroVariant() {
   if (b2) b2.innerHTML = '<strong>Bad reviews handled right:</strong> empathy-first drafts + escalation workflow';
   if (b3) b3.innerHTML = '<strong>Team-safe:</strong> draft-only by default; auto-post is opt-in';
 
-  // CTAs
   const cta1 = document.getElementById('hero_cta_primary');
   const cta2 = document.getElementById('hero_cta_secondary');
   if (cta1) cta1.textContent = 'Join waitlist (founder pricing)';
@@ -199,64 +162,25 @@ function applyHeroVariant() {
   }
 }
 
+/* ─── init ─────────────────────────────────────────────────────────────────── */
+
 function init() {
   applyHeroVariant();
 
+  // year in footer
   const year = document.getElementById('year');
   if (year) year.textContent = String(new Date().getFullYear());
 
-  // Pageview baseline counter (no-login).
-  // Key name is intentionally stable; change only if you want to reset the counter.
+  // pageview counter (best-effort)
   void countapiHit('afunls-replypilot-waitlist/pageview');
 
   const form = document.getElementById('waitlist');
   if (!form) return;
 
-  // Populate hidden attribution fields.
-  const attrs = getAttribution();
-  applyAttributionToForm(form, attrs);
+  // populate hidden attribution fields
+  applyAttributionToForm(form, getAttribution());
 
   const status = form.querySelector('.form__status');
-
-  function buildGitHubIssueUrl(data) {
-    // We use GitHub Issues as a “backend” that requires no new SaaS accounts for us.
-    // Note: the submitter may need a GitHub account; if that fails they’ll fall back to mailto.
-    const repo = 'AFunLS/replypilot-waitlist';
-    const title = `Waitlist: ${data.email || 'unknown'} (${new Date().toISOString()})`;
-
-    const bodyLines = [
-      '# ReplyPilot waitlist signup',
-      '',
-      `Name: ${data.name || ''}`,
-      `Email: ${data.email || ''}`,
-      `Website: ${data.website || ''}`,
-      `# locations: ${data.locations || ''}`,
-      `Reviews/month: ${data.reviews_per_month || ''}`,
-      `Preference: ${data.mode || ''}`,
-      `GBP links: ${data.gbp_links || ''}`,
-      '',
-      '## Attribution',
-      `utm_source: ${data.utm_source || ''}`,
-      `utm_medium: ${data.utm_medium || ''}`,
-      `utm_campaign: ${data.utm_campaign || ''}`,
-      `utm_content: ${data.utm_content || ''}`,
-      `utm_term: ${data.utm_term || ''}`,
-      `ref: ${data.ref || ''}`,
-      `landing: ${data.landing || ''}`,
-      '',
-      `Client time: ${data.client_ts || ''}`,
-      '',
-      '---',
-      'Created from the static waitlist form (GitHub Issues capture).'
-    ];
-
-    const params = new URLSearchParams();
-    params.set('title', title);
-    params.set('body', bodyLines.join('\n'));
-    params.set('labels', 'waitlist');
-
-    return `https://github.com/${repo}/issues/new?${params.toString()}`;
-  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -264,33 +188,23 @@ function init() {
 
     const data = toObject(form);
     if (!data.email) {
-      setStatus(status, 'Please enter an email.', 'error');
+      setStatus(status, 'Please enter your email.', 'error');
       return;
     }
 
-    // Primary path: GitHub Issues (no-login for us; stores data + UTMs).
-    // This is a deterministic “backend” that works on GitHub Pages.
     try {
-      const issueUrl = buildGitHubIssueUrl(data);
-      void countapiHit('afunls-replypilot-waitlist/waitlist_submit_github_issue');
-      setStatus(
-        status,
-        'Almost done — a GitHub page will open. Click “Submit new issue” to confirm your spot. If you don\'t have GitHub, we\'ll open an email fallback.',
-        'success'
-      );
-
-      const w = window.open(issueUrl, '_blank', 'noopener,noreferrer');
-      if (!w) {
-        // Popup blocked.
-        window.location.href = issueUrl;
-      }
-
-      // Don’t reset immediately; user may want to retry mailto.
+      void countapiHit('afunls-replypilot-waitlist/waitlist_submit');
+      await postFormspree(data);
+      setStatus(status, "You're on the list — we'll be in touch!", 'success');
+      form.reset();
+      // re-apply hidden attribution after reset
+      applyAttributionToForm(form, getAttribution());
     } catch (err) {
-      const msg = String(err?.message || 'Submit failed');
-      void countapiHit('afunls-replypilot-waitlist/waitlist_submit_fallback_mailto');
-      setStatus(status, `Couldn’t open GitHub (${msg}). Opening email fallback…`, 'error');
-      window.location.href = fallbackMailto(data);
+      console.warn('ReplyPilot: Formspree submit failed', err);
+      void countapiHit('afunls-replypilot-waitlist/waitlist_submit_error');
+      setStatus(status,
+        'Submit failed — please try again or email us directly.',
+        'error');
     }
   });
 }
