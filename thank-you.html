@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>You're on the list — ReplyPilot</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- Preserve UTM through thank-you page -->
+  <script>
+    // Pass through GA4 if present
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+  </script>
+  <style>
+    .thankyou-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg, #0b1220);
+      color: var(--fg, #f0f4ff);
+    }
+    .thankyou-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .thankyou-wrap h1 { font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 0.75rem; }
+    .thankyou-wrap p  { max-width: 480px; color: var(--muted, #8ca0c8); line-height: 1.65; }
+    .btn--back { display: inline-block; margin-top: 1.75rem; }
+  </style>
+</head>
+<body>
+  <div class="thankyou-wrap">
+    <div class="thankyou-icon">✅</div>
+    <h1>You're on the list!</h1>
+    <p>
+      Thanks for your interest in ReplyPilot. We'll reach out as soon as early access opens.
+      No spam — just one email when it's ready.
+    </p>
+    <a class="btn btn--primary btn--back" href="/">Back to homepage</a>
+  </div>
+
+  <script>
+    // Fire a GA4 'sign_up' event if measurement ID is available
+    (function () {
+      try {
+        var GA_MEASUREMENT_ID = (window.__GA_MEASUREMENT_ID || '');
+        if (!GA_MEASUREMENT_ID) {
+          // Try to read it from the referrer page's window (won't cross origin)
+          // Safe no-op if absent
+          return;
+        }
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+        document.head.appendChild(s);
+        s.onload = function () {
+          gtag('js', new Date());
+          gtag('config', GA_MEASUREMENT_ID);
+          gtag('event', 'sign_up', { method: 'formspree_waitlist' });
+        };
+      } catch (e) { /* silent */ }
+    })();
+  </script>
+</body>
+</html>

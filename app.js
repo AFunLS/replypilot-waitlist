@@ -195,10 +195,8 @@ function init() {
     try {
       void countapiHit('afunls-replypilot-waitlist/waitlist_submit');
       await postFormspree(data);
-      setStatus(status, "You're on the list — we'll be in touch!", 'success');
-      form.reset();
-      // re-apply hidden attribution after reset
-      applyAttributionToForm(form, getAttribution());
+      // Redirect to thank-you page for clear UX confirmation
+      window.location.href = './thank-you.html';
     } catch (err) {
       console.warn('ReplyPilot: Formspree submit failed', err);
       void countapiHit('afunls-replypilot-waitlist/waitlist_submit_error');
