@@ -23,6 +23,29 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+
+    <!-- Google Analytics / GA4 - Insert Measurement ID into GA_MEASUREMENT_ID below -->
+    <!-- If you prefer Plausible, replace this block with the Plausible script and set data-domain accordingly. -->
+    <script>
+      (function(){
+        // Prefer setting GA measurement ID via window.__RP_CONFIG__ or environment during deploy.
+        var GA_MEASUREMENT_ID = (window.__RP_CONFIG__ && window.__RP_CONFIG__.ga) || 'GA_MEASUREMENT_ID_PLACEHOLDER';
+        if (GA_MEASUREMENT_ID && GA_MEASUREMENT_ID.indexOf('GA_')===0) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);} 
+          gtag('js', new Date());
+          var s1 = document.createElement('script');
+          s1.async = true;
+          s1.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+          document.head.appendChild(s1);
+          s1.onload = function(){
+            gtag('config', GA_MEASUREMENT_ID, { 'anonymize_ip': true });
+          };
+        } else {
+          console.warn('ReplyPilot: GA_MEASUREMENT_ID not set. Pageview tracking disabled.');
+        }
+      })();
+    </script>
   </head>
 
   <body>
