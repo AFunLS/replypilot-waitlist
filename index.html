@@ -99,7 +99,7 @@
                 <p class="card__subtitle">Get early access + founder pricing for 12 months.</p>
               </div>
 
-              <form id="waitlist" class="form" autocomplete="on">
+              <form id="waitlist" class="form" autocomplete="on" method="POST">
                 <label class="field">
                   <span>Name</span>
                   <input name="name" type="text" placeholder="Jane" />
@@ -156,6 +156,7 @@
                 <input type="hidden" name="utm_term" value="" />
                 <input type="hidden" name="ref" value="" />
                 <input type="hidden" name="landing" value="" />
+                <input type="hidden" name="redirect_to" value="https://afunls.github.io/replypilot-waitlist/thank-you.html" />
 
                 <button class="btn btn--primary btn--full" type="submit">
                   Join waitlist
@@ -164,8 +165,7 @@
                 <p class="fineprint">
                   By submitting, you agree we can email you about early access. We won't sell your data.
                   <br />
-                  Note: this is a no-login waitlist (for ReplyPilot), but the current backend uses a GitHub Issue to capture your signup.
-                  If you don't have GitHub, the form will open an email fallback.
+                  Note: this is a no-login waitlist (for ReplyPilot). Submitting creates a private internal signup record (currently stored as a GitHub Issue).
                 </p>
 
                 <div class="form__status" role="status" aria-live="polite"></div>

@@ -105,29 +105,20 @@ function toObject(form) {
   return obj;
 }
 
-/* ─── Formspree JSON POST ──────────────────────────────────────────────────── */
+/* ─── Direct submit endpoint (no Formspree) ───────────────────────────────── */
 
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maqdalbr';
+// IMPORTANT:
+// - This endpoint is expected to accept standard HTML form POSTs (application/x-www-form-urlencoded)
+// - It should redirect to redirect_to=... on success.
+// - This lets us avoid Formspree premium webhooks entirely.
+//
+// For now, we support runtime override via window.__RP_CONFIG__.relay.
+// Example:
+//   window.__RP_CONFIG__ = { relay: 'https://<your-relay>/' }
+const RELAY_ENDPOINT_DEFAULT = 'https://5eb5d56eb48642.lhr.life/';
 
-async function postFormspree(data) {
-  const res = await fetch(FORMSPREE_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(data)
-  });
-  let payload = null;
-  try { payload = await res.json(); } catch { /* ignore */ }
-  if (!res.ok) {
-    const msg = (payload && (payload.error || payload.message)) || `Request failed (${res.status})`;
-    const err = new Error(msg);
-    err.status = res.status;
-    err.payload = payload;
-    throw err;
-  }
-  return payload;
+function getRelayEndpoint() {
+  return (window.__RP_CONFIG__ && window.__RP_CONFIG__.relay) || RELAY_ENDPOINT_DEFAULT;
 }
 
 /* ─── A/B hero variant ─────────────────────────────────────────────────────── */
@@ -182,28 +173,17 @@ function init() {
 
   const status = form.querySelector('.form__status');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  // Route to relay endpoint (native form POST) so we don't depend on Formspree premium webhooks.
+  // Native form POST avoids CORS issues on static hosting.
+  try {
+    form.setAttribute('action', getRelayEndpoint());
+    form.setAttribute('method', 'POST');
+  } catch { /* ignore */ }
+
+  form.addEventListener('submit', () => {
     setStatus(status, 'Submitting…');
-
-    const data = toObject(form);
-    if (!data.email) {
-      setStatus(status, 'Please enter your email.', 'error');
-      return;
-    }
-
-    try {
-      void countapiHit('afunls-replypilot-waitlist/waitlist_submit');
-      await postFormspree(data);
-      // Redirect to thank-you page for clear UX confirmation
-      window.location.href = './thank-you.html';
-    } catch (err) {
-      console.warn('ReplyPilot: Formspree submit failed', err);
-      void countapiHit('afunls-replypilot-waitlist/waitlist_submit_error');
-      setStatus(status,
-        'Submit failed — please try again or email us directly.',
-        'error');
-    }
+    void countapiHit('afunls-replypilot-waitlist/waitlist_submit');
+    // Do NOT preventDefault: we want the browser to submit the form normally.
   });
 }
 
